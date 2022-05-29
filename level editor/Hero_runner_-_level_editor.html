@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Hero runner - level editor</title>
+	<script type="text/javascript">
+		function saveLevel(sourceText, fileIdentity) {
+			var workElement = document.createElement("a");
+			if ('download' in workElement) {
+				workElement.href = "data:" + 'text/plain' + "charset=utf-8," + escape(sourceText);
+				workElement.setAttribute("download", fileIdentity);
+				document.body.appendChild(workElement);
+				var eventMouse = document.createEvent("MouseEvents");
+				eventMouse.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+				workElement.dispatchEvent(eventMouse);
+				document.body.removeChild(workElement);
+			} else throw 'File saving not supported for this browser';
+		}	
+	</script>
+	
+	<style type="text/css">
+	
+		html{
+			text-align: center;
+		}
+		
+		#canvas,
+		
+		#tiles {
+			padding-bottom: 10px;
+		}
+		
+		#level, #level tr {
+			border: 0;
+		}
+		
+		#level tr td {
+			width: 32px;
+			height: 30px;
+			border: 0;
+		}
+		
+		#tiles div:hover, #level tr td:hover {
+			background-color: rgb(40,40,150);
+			background-blend-mode: difference;
+		}
+		
+		#level {
+			border-collapse: collapse;
+			margin: auto;
+		}
+		
+		#tiles div, #level tr td {
+			background-image: url('tiles.png');
+		}
+		
+		#tiles div {
+			width: 32px;
+			height: 32px;
+			display: inline-block;
+			border: 3px black solid;
+		}
+		
+		#tiles div:hover {
+			border: 3px yellow solid;
+		}
+		
+		#tiles div.selected {
+			border: 3px red solid;
+		}
+		
+		#level-data {
+			font-size: 8px;
+		}
+		
+		.empty {
+			background-position: 0 0;
+		}
+		.hero {
+			background-position: 0 -32px;
+		}
+		.ennemy {
+			background-position: 0 -64px;
+		}
+		.ground {
+			background-position: 0 -96px;
+		}
+		.cable {
+			background-position: 0 -128px;
+		}
+		.scale {
+			background-position: 0 -160px;
+		}
+		.treasure {
+			background-position: 0 -192px;
+		}
+		.endscale {
+			background-position: 0 -224px;
+		}
+
+		body {
+			background-color: rgb(130,90,90);
+		}	
+				
+	</style>
+	
+</head>
+
+<body> 
+    <!-- table pour afficher le titre de l'éditeur -->
+	<table align = "center">
+		<tr>
+			<td width=16%><img class="fit-picture" src="Hero.png" alt="Héro"></td>
+			<td width=68% style="color:yellow;"><marquee width="100%" scrollamount="100%" scrolldelay="800"><h1>Hero runner - Level editor</h1></marquee></td>
+			<td width=16%><img class="fit-picture" src="Hero.png" alt="Héro"></td>
+	</tr>
+	</table>
+	
+	<!-- table pour afficher les différentes cases du niveaux -->
+	<div id="canvas">
+		<table id="level" style="cursor: none; caret-color: transparent;">
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+			</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+			</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+			<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+				<tr>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>				
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				<td class="empty"></td>
+				</tr>
+		</table>
+	</div>
+	
+	<!-- Affichage des différents tiles disponibles pour notre niveau -->
+	<div id="tiles" style="cursor: none; caret-color: transparent;">
+		<div class="empty"></div>	
+		<div class="hero"></div>
+		<div class="ennemy"></div>
+		<div class="ground"></div>
+		<div class="cable"></div>
+		<div class="scale"></div>
+		<div class="treasure"></div>
+		<div class="endscale"></div>
+	</div>
+	
+	<div>
+	    <button id="saveButton" onclick="saveLevel(document.querySelector('#level-data').value, 'LEVELSAVED.SAV')" style="background-color:blue;font-size: 25px; height: 50px; width: 220px; color:yellow;">&nbsp;&nbsp;Save level&nbsp;&nbsp;</button>
+		<button id="generate" style="background-color:green;font-size: 25px; height: 50px; width: 220px; color:yellow;">&nbsp;Generate level&nbsp;</button>
+		<BR/><BR/>
+		<label for="fileToLoad" style="font-size: 25px;">Cliquer sur ce bouton pour charger un fichier&nbsp;&nbsp;</label>
+		<input type = "file" id="fileToLoad" name="fileToLoad" accept="LEVELSAVED*,.SAV" style="font-size: 25px;">
+	
+		<p>&nbsp;</p>
+		<textarea id="level-data" cols="160" rows="16">
+		</textarea>
+	</div>
+	<script type="text/javascript">
+
+		document.getElementById('fileToLoad').addEventListener('change', function() {
+			var file = new FileReader();
+			file.onload = () => {
+				document.querySelector('#level-data').value = file.result;
+				var tableau = (document.querySelector('#level-data').value).split(",");
+				let cells = document.querySelectorAll('#level tr td');
+				let id = 0;
+				for (let cell of cells) {
+					cell.className = tableau[id].replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '').toLowerCase();
+					id++;
+				};
+			}
+			file.readAsText(this.files[0]);
+		});
+	
+		let selected = '';
+
+		let items = document.querySelectorAll('#tiles div');
+		for (let item of items) {
+			item.addEventListener('click', event => {
+				selected = item.className;
+				for (let i of items) {
+					i.classList.remove('selected');
+				}
+				item.classList.add('selected');
+			});
+		}
+
+		let cells = document.querySelectorAll('#level tr td');
+		for (let cell of cells) {
+			cell.addEventListener('click', event => {
+				cell.className = selected;
+			});
+		}
+
+		document.querySelector('#generate').addEventListener('click', event => {
+			let output = '';
+			let cells = document.querySelectorAll('#level tr td');
+			let id = 0;
+			for (let cell of cells) {
+				id++;
+				if (cell.className.endsWith('selected')) cell.className.remove('selected');
+				output += cell.className.toUpperCase() + ',';
+				if (id % 28 == 0)
+					output += "\n";
+				else
+				{
+					if (cell.className.length < 8) output += ' '.repeat(8 - cell.className.length);
+				}
+			}
+			document.querySelector('#level-data').value = output;
+		});
+	</script>
+</body>
+</html>
