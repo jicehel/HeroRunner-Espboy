@@ -25,11 +25,31 @@ void Game::_readButtons() {
 
     if (espboy.button.pressed(Button::LEFT)) {
 
-        _player.runToLeft();
+        if (_player.x() > _map.TILE_LENGTH)
+            if(!_map.isGround(_player.x() - _map.TILE_LENGTH, _player.y())) 
+                _player.runToLeft();
+            else
+                if (_player.x() > 0)
+                    _player.runToLeft(); 
+                else
+                    _player.stop();    
+        else 
+            _player.stop();   
+
 
     } else if (espboy.button.pressed(Button::RIGHT)) {
 
-        _player.runToRight();
+        if ((_player.x()  + PLAYER_WIDTH + _map.TILE_LENGTH) < LEVEL_WIDTH * _map.TILE_LENGTH)
+            if(!_map.isGround(_player.x() + _map.TILE_LENGTH, _player.y())) 
+                _player.runToRight();
+            else
+                if (_player.x() + PLAYER_WIDTH + _map.TILE_LENGTH < LEVEL_WIDTH * _map.TILE_LENGTH)
+                    _player.runToRight();
+                else
+                    _player.stop();    
+        else 
+            _player.stop();   
+
 
     } else if (
         espboy.button.released(Button::LEFT) ||
@@ -80,7 +100,13 @@ void Game::_draw() {
     _map.draw(_level, _camera, _framebuffer);
     _player.draw(_camera, _framebuffer);
 
+    _framebuffer->setTextColor(0xffff);
+    _framebuffer->drawNumber(_player.x()/ _map.TILE_LENGTH,  1, 1);
+    _framebuffer->drawNumber(_player.y()/ _map.TILE_LENGTH, 21, 1);
+    _framebuffer->drawNumber(!_map.isGround(_player.x() - _map.TILE_LENGTH, _player.y()), 41, 1);
+
     _framebuffer->pushSprite(0, 0);
+
 
 }
 

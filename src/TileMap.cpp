@@ -11,6 +11,47 @@ bool TileMap::isShown(const uint8_t tile) const {
 
 }
 
+bool TileMap::isFall(uint8_t pox, uint8_t poy) {
+    pox = pox / TILE_LENGTH;
+    poy = poy / TILE_LENGTH;
+	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
+	if (tile == EMPTY || tile == CABLE || tile == TREASURE || tile == ENNEMY || tile == HERO) 
+		return true;
+	else
+		return false;
+}
+
+bool TileMap::isGround(uint8_t pox, uint8_t poy) {
+    pox = pox / TILE_LENGTH;
+    poy = poy / TILE_LENGTH;
+	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
+	if (tile == GROUND) 
+		return true;
+	else
+		return false;
+}
+
+bool TileMap::isTreasure(uint8_t pox, uint8_t poy) {
+    pox = pox / TILE_LENGTH;
+    poy = poy / TILE_LENGTH;
+	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
+	if (tile == TREASURE) 
+		return true;
+	else
+		return false;
+}
+
+
+bool TileMap::isCable(uint8_t pox, uint8_t poy) {
+    pox = pox / TILE_LENGTH;
+    poy = poy / TILE_LENGTH;
+	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
+	if (tile == CABLE) 
+		return true;
+	else
+		return false;
+}
+
 void TileMap::draw(uint8_t const level, Camera const &camera, LGFX_Sprite * const framebuffer) {
 
     uint32_t const offset = (level - 1) * LEVEL_SIZE;
