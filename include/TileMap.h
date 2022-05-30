@@ -8,7 +8,13 @@ class TileMap {
     public:
 
         bool isShown(const uint8_t tile) const;
+        bool isFall(uint8_t pox, uint8_t poy);
+        bool isGround(uint8_t pox, uint8_t poy);
+        bool isTreasure(uint8_t pox, uint8_t poy);
+        bool isCable(uint8_t pox, uint8_t poy);
         void draw(uint8_t const level, Camera const &camera, LGFX_Sprite * const framebuffer);
+
+        uint8_t TILE_LENGTH = 8;
 
 };
 

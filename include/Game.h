@@ -12,8 +12,19 @@ class Game {
         void begin();
         void loop();
     
-    private:
+      private:
 
+        enum class State : uint8_t {
+            PLAY,
+            TIME_OUT,
+            SHOW,
+            HIDE,
+            MENU,
+            GAME_OVER,
+            PAUSE
+        };
+
+        State    _state;
         LGFX_Sprite *_framebuffer;
         Camera       _camera;
         TileMap      _map;

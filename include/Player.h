@@ -25,7 +25,10 @@ class Player {
 
         enum class State : uint8_t {
             STAND_BY,
-            RUN
+            RUN,
+            DIG,
+            CLIMB,
+            UNDIG
         };
     
         State    _state;
