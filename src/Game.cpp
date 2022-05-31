@@ -30,7 +30,7 @@ void Game::_readButtons() {
 
     if (espboy.button.held(Button::LEFT)) {
 
-        if (_player.x() > TILE_LENGTH)
+        if (_player.x() >= TILE_LENGTH)
             if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
                 _player.runToLeft();
             else
@@ -68,7 +68,7 @@ void Game::_readButtons() {
     if (espboy.button.held(Button::UP)) {
 
         if (_player.y()  > 0)
-            if(_map.isLadder(_player.x(), _player.y() + TILE_LENGTH) || _map.isLadder(_player.x(), _player.y())) 
+            if(_map.isLadder(_player.x(), _player.y()))
                 _player.flyUp();
             else
                 _player.stop();    
@@ -78,8 +78,8 @@ void Game::_readButtons() {
 
     } else if (espboy.button.held(Button::DOWN)) {
 
-        if (_player.y()  > 0)
-            if(_map.isLadder(_player.x(), _player.y() - TILE_LENGTH) || _map.isLadder(_player.x(), _player.y())) 
+        if (_player.y()  <= TFT_HEIGHT - TILE_LENGTH)
+            if(_map.isLadder(_player.x(), _player.y() + TILE_LENGTH))
                 _player.flyDown();
             else
                 _player.stop();    

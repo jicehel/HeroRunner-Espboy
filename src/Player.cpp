@@ -27,6 +27,8 @@ void Player::stop() {
     _state = State::STAND_BY;
     _vx    = 0;
     _vy    = 0;
+    _x = (_x / TILE_LENGTH) * TILE_LENGTH;
+    _y = (_y / TILE_LENGTH) * TILE_LENGTH;
     _frame = PLAYER_STAND_BY_FRAME;
     _dist  = 0; 
 
