@@ -11,6 +11,8 @@ class Game {
 
         void begin();
         void loop();
+        boolean goldCompleted();
+        
     
       private:
 
@@ -24,11 +26,11 @@ class Game {
             PAUSE
         };
 
-        State    _state;
-        LGFX_Sprite *_framebuffer;
-        Camera       _camera;
-        TileMap      _map;
-        Player       _player;
+        State         _state;
+        LGFX_Sprite   *_framebuffer;
+        Camera        _camera;
+        TileMap       _map;
+        Player        _player;
 
         uint8_t _level;
 

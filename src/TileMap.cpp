@@ -4,7 +4,7 @@
 
 bool TileMap::isShown(const uint8_t tile) const {
 
-    if (tile == GROUND || tile == SCALE || tile == CABLE) 
+    if (tile == GROUND || tile == SCALE || tile == CABLE || (tile == ENDSCALE && true)) 
         return true;
     else
         return false;    
@@ -51,6 +51,22 @@ bool TileMap::isCable(uint8_t pox, uint8_t poy) {
 	else
 		return false;
 }
+
+bool TileMap::isLadder(uint8_t pox, uint8_t poy) {
+    pox = pox / TILE_LENGTH;
+    poy = poy / TILE_LENGTH;
+	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
+	if (tile == SCALE || (tile == ENDSCALE && true))
+		return true;
+	else
+		return false;
+}
+
+
+boolean TileMap::goldCompleted() {
+    return true;
+}
+
 
 void TileMap::draw(uint8_t const level, Camera const &camera, LGFX_Sprite * const framebuffer) {
 

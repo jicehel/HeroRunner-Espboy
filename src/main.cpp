@@ -1,5 +1,5 @@
 #include <ESPboy.h>
-#include <Game.h>
+#include <game.h>
 
 Game game;
 

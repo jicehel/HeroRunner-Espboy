@@ -14,6 +14,10 @@ void Game::begin() {
     
 }
 
+boolean Game::goldCompleted() {
+    return true;
+}
+
 void Game::loop() {
 
     if (_player.isStop()) _readButtons();
@@ -63,11 +67,24 @@ void Game::_readButtons() {
     
     if (espboy.button.held(Button::UP)) {
 
-        _player.flyUp();
+        if (_player.y()  > 0)
+            if(_map.isLadder(_player.x(), _player.y() + TILE_LENGTH) || _map.isLadder(_player.x(), _player.y())) 
+                _player.flyUp();
+            else
+                _player.stop();    
+        else 
+            _player.stop();   
+
 
     } else if (espboy.button.held(Button::DOWN)) {
 
-        _player.flyDown();
+        if (_player.y()  > 0)
+            if(_map.isLadder(_player.x(), _player.y() - TILE_LENGTH) || _map.isLadder(_player.x(), _player.y())) 
+                _player.flyDown();
+            else
+                _player.stop();    
+        else 
+            _player.stop();  
 
     }
 
