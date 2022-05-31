@@ -28,7 +28,11 @@ void Game::loop() {
 
 void Game::_readButtons() {
 
-    if (espboy.button.held(Button::LEFT)) {
+    if (_player.isStop() && _map.isFall(_player.x(),_player.y() + TILE_LENGTH ) && !_map.isCable(_player.x(),_player.y())) {
+
+ 		_player.fall();
+
+    } else if (espboy.button.held(Button::LEFT)) {
 
         if (_player.x() >= TILE_LENGTH)
             if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
@@ -69,7 +73,7 @@ void Game::_readButtons() {
 
         if (_player.y()  > 0)
             if(_map.isLadder(_player.x(), _player.y()))
-                _player.flyUp();
+                _player.climbUp();
             else
                 _player.stop();    
         else 
@@ -80,8 +84,10 @@ void Game::_readButtons() {
 
         if (_player.y()  <= TFT_HEIGHT - TILE_LENGTH)
             if(_map.isLadder(_player.x(), _player.y() + TILE_LENGTH))
-                _player.flyDown();
-            else
+                _player.climbDown();
+            else if (_player.isStop() && _map.isFall(_player.x(),_player.y() + TILE_LENGTH )) {
+         		_player.fall();
+            } else
                 _player.stop();    
         else 
             _player.stop();  

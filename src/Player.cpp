@@ -52,21 +52,27 @@ void Player::runToRight() {
 
 }
 
-void Player::flyUp() {
+void Player::climbUp() {
 
-    if (_y > 0) {
+        _state = State::CLIMB;
         _vy  = -1;
-        _dist = 0;
-    }    
+        _dist = 0;    
 
 }
 
-void Player::flyDown() {
+void Player::climbDown() {
 
-    if (_y + PLAYER_HEIGHT < LEVEL_HEIGHT * TILE_LENGTH) {
+        _state = State::CLIMB;
          _vy =  1;
-        _dist = 0;
-    }    
+        _dist = 0;   
+
+}
+
+void Player::fall() {
+
+        _state = State::FALL;
+         _vy =  1;
+        _dist = 0;   
 
 }
 
@@ -114,6 +120,13 @@ void Player::update() {
             
             break;
         
+        case State::CLIMB:
+            break;
+
+        case State::FALL:
+            break;
+
+
         default:;
 
     }
