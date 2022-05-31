@@ -17,8 +17,8 @@ uint16_t constexpr LEVEL_SIZE   = LEVEL_WIDTH * LEVEL_HEIGHT;
 uint8_t  constexpr LEVEL_NUMBER = 2;
 
 uint8_t const constexpr LEVEL_PLAYER_START[] = {
-     2, 20, // Level 1
-    16, 20  // Level 2
+     2, 14, // Level 1
+    16, 14  // Level 2
 };
 
 uint8_t const constexpr LEVEL_MAP[] PROGMEM = {

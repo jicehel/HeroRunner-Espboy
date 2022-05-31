@@ -12,18 +12,23 @@ void Player::begin(uint8_t const level) {
     _y     = TILE_LENGTH * LEVEL_PLAYER_START[offset + 1];
     _vx    = 0;
     _vy    = 0;
+    _dist  = 0;
     _frame = 0;
 
 }
 
-uint16_t const Player::x() const { return _x; }
-uint16_t const Player::y() const { return _y; }
+uint16_t const Player::x()      const { return _x; }
+uint16_t const Player::y()      const { return _y; }
+uint8_t  const Player::dist()   const { return _dist; }
+boolean  const Player::isStop() const { return (_state == State::STAND_BY) ? (true) : (false); }
 
 void Player::stop() {
 
     _state = State::STAND_BY;
     _vx    = 0;
+    _vy    = 0;
     _frame = PLAYER_STAND_BY_FRAME;
+    _dist  = 0; 
 
 }
 
@@ -32,6 +37,7 @@ void Player::runToLeft() {
     _state = State::RUN;
     _vx    = -1;
     _frame = PLAYER_RUN_START_FRAME;
+    _dist = 0;
     
 }
 
@@ -40,18 +46,25 @@ void Player::runToRight() {
     _state = State::RUN;
     _vx    = 1;
     _frame = PLAYER_RUN_START_FRAME;
+    _dist = 0;
 
 }
 
 void Player::flyUp() {
 
-    if (_y > 0) _y--;
+    if (_y > 0) {
+        _vy  = -1;
+        _dist = 0;
+    }    
 
 }
 
 void Player::flyDown() {
 
-    if (_y + PLAYER_HEIGHT < LEVEL_HEIGHT * TILE_LENGTH) _y++;
+    if (_y + PLAYER_HEIGHT < LEVEL_HEIGHT * TILE_LENGTH) {
+         _vy =  1;
+        _dist = 0;
+    }    
 
 }
 
@@ -63,6 +76,7 @@ void Player::update() {
     ) {
 
         _x += _vx;
+        (_vx > 0) ? (_dist += _vx) : (_dist -= _vx);
 
     }
 
@@ -72,6 +86,13 @@ void Player::update() {
     ) {
 
         _y += _vy;
+        (_vy > 0) ? (_dist += _vy) : (_dist -= _vy);
+
+    }
+
+    if (_dist >= TILE_LENGTH) {
+
+        Player::stop();
 
     }
 

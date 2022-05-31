@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "assets/levels.h"
+#include "assets/tileset.h"
 #include "assets/sprites.h"
 
 void Game::begin() {
@@ -15,7 +16,7 @@ void Game::begin() {
 
 void Game::loop() {
 
-    _readButtons();
+    if (_player.isStop()) _readButtons();
     _update();
     _draw();
 
@@ -23,10 +24,10 @@ void Game::loop() {
 
 void Game::_readButtons() {
 
-    if (espboy.button.pressed(Button::LEFT)) {
+    if (espboy.button.held(Button::LEFT)) {
 
-        if (_player.x() > _map.TILE_LENGTH)
-            if(!_map.isGround(_player.x() - _map.TILE_LENGTH, _player.y())) 
+        if (_player.x() > TILE_LENGTH)
+            if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
                 _player.runToLeft();
             else
                 if (_player.x() > 0)
@@ -37,13 +38,13 @@ void Game::_readButtons() {
             _player.stop();   
 
 
-    } else if (espboy.button.pressed(Button::RIGHT)) {
+    } else if (espboy.button.held(Button::RIGHT)) {
 
-        if ((_player.x()  + PLAYER_WIDTH + _map.TILE_LENGTH) < LEVEL_WIDTH * _map.TILE_LENGTH)
-            if(!_map.isGround(_player.x() + _map.TILE_LENGTH, _player.y())) 
+        if ((_player.x()  + PLAYER_WIDTH + TILE_LENGTH) < LEVEL_WIDTH * TILE_LENGTH)
+            if(!_map.isGround(_player.x() + TILE_LENGTH, _player.y())) 
                 _player.runToRight();
             else
-                if (_player.x() + PLAYER_WIDTH + _map.TILE_LENGTH < LEVEL_WIDTH * _map.TILE_LENGTH)
+                if (_player.x() + PLAYER_WIDTH + TILE_LENGTH < LEVEL_WIDTH * TILE_LENGTH)
                     _player.runToRight();
                 else
                     _player.stop();    
@@ -100,10 +101,10 @@ void Game::_draw() {
     _map.draw(_level, _camera, _framebuffer);
     _player.draw(_camera, _framebuffer);
 
-    _framebuffer->setTextColor(0xffff);
-    _framebuffer->drawNumber(_player.x()/ _map.TILE_LENGTH,  1, 1);
-    _framebuffer->drawNumber(_player.y()/ _map.TILE_LENGTH, 21, 1);
-    _framebuffer->drawNumber(!_map.isGround(_player.x() - _map.TILE_LENGTH, _player.y()), 41, 1);
+    // _framebuffer->setTextColor(0xffff);
+    // _framebuffer->drawNumber(_player.x()/ TILE_LENGTH,  1, 1);
+    // _framebuffer->drawNumber(_player.y()/ TILE_LENGTH, 21, 1);
+    // _framebuffer->drawNumber(!_map.isGround(_player.x() - TILE_LENGTH, _player.y()), 41, 1);
 
     _framebuffer->pushSprite(0, 0);
 

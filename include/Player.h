@@ -9,8 +9,10 @@ class Player {
 
         void begin(uint8_t const level);
 
-        uint16_t const x() const;
-        uint16_t const y() const;
+        uint16_t const x()    const;
+        uint16_t const y()    const;
+        uint8_t  const dist() const;
+        boolean  const isStop() const;
 
         void stop();
         void runToLeft();
@@ -36,6 +38,7 @@ class Player {
         uint16_t _y;
         int8_t   _vx;
         int8_t   _vy;
+        int8_t   _dist;
         uint8_t  _frame;
 
 };
