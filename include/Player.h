@@ -9,16 +9,20 @@ class Player {
 
         void begin(uint8_t const level);
 
-        uint16_t const x()    const;
-        uint16_t const y()    const;
-        uint8_t  const dist() const;
+        float_t const x()    const;
+        float_t const y()    const;
+        float_t  const dist() const;
         boolean  const isStop() const;
 
         void stop();
         void runToLeft();
         void runToRight();
-        void flyUp();
-        void flyDown();
+        void cableToLeft();
+        void cableToRight();
+
+        void climbUp();
+        void climbDown();
+        void fall();
 
         void update();
         void draw(Camera const &camera, LGFX_Sprite *framebuffer);
@@ -28,18 +32,31 @@ class Player {
         enum class State : uint8_t {
             STAND_BY,
             RUN,
+            ON_CABLE,
+            FALL,
             DIG,
             CLIMB,
             UNDIG
         };
-    
+
         State    _state;
-        uint16_t _x;
-        uint16_t _y;
-        int8_t   _vx;
-        int8_t   _vy;
-        int8_t   _dist;
+
+        float_t  _v_run   = 0.6;
+        float_t  _v_cable = 0.4;
+        float_t  _v_climb = 0.25;
+        float_t  _v_fall  = 1;
+
+
+  
+        float_t _x;
+        float_t _y;
+        float_t  _vx;
+        float_t  _vy;
+        float_t  _dist;
         uint8_t  _frame;
+        uint8_t  _start_frame;
+        uint8_t  _end_frame;
+        uint8_t  _counter;
 
 };
 
