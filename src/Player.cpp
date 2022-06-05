@@ -17,9 +17,9 @@ void Player::begin(uint8_t const level) {
 
 }
 
-uint16_t const Player::x()      const { return _x; }
-uint16_t const Player::y()      const { return _y; }
-uint8_t  const Player::dist()   const { return _dist; }
+float_t const Player::x()      const { return _x; }
+float_t const Player::y()      const { return _y; }
+float_t  const Player::dist()   const { return _dist; }
 boolean  const Player::isStop() const { return (_state == State::STAND_BY) ? (true) : (false); }
 
 void Player::stop() {
@@ -37,7 +37,10 @@ void Player::stop() {
 void Player::runToLeft() {
 
     _state = State::RUN;
-    _vx    = -1;
+    _vx    = -_v_run;
+    _counter     = 0;
+    _start_frame = PLAYER_RUN_START_FRAME;
+    _end_frame   = PLAYER_RUN_START_FRAME + PLAYER_RUN_FRAMES;
     _frame = PLAYER_RUN_START_FRAME;
     _dist = 0;
     
@@ -46,33 +49,72 @@ void Player::runToLeft() {
 void Player::runToRight() {
 
     _state = State::RUN;
-    _vx    = 1;
+    _vx    = _v_run;
+    _counter     = 0;
+    _start_frame = PLAYER_RUN_START_FRAME;
+    _end_frame   = PLAYER_RUN_START_FRAME + PLAYER_RUN_FRAMES;
     _frame = PLAYER_RUN_START_FRAME;
+    _dist = 0;
+
+
+}
+void Player::cableToLeft() {
+
+    _state = State::ON_CABLE;
+    _vx    = -_v_cable;
+    _counter     = 0;
+    _start_frame = PLAYER_CABLE_START_FRAME;
+    _end_frame   = PLAYER_CABLE_START_FRAME + PLAYER_CABLE_FRAMES;
+    _frame = PLAYER_CABLE_START_FRAME;
+    _dist = 0;
+    
+}
+
+void Player::cableToRight() {
+
+    _state = State::ON_CABLE;
+    _vx    = _v_cable;
+    _counter     = 0;
+    _start_frame = PLAYER_CABLE_START_FRAME;
+    _end_frame   = PLAYER_CABLE_START_FRAME + PLAYER_CABLE_FRAMES;
+    _frame = PLAYER_CABLE_START_FRAME;
     _dist = 0;
 
 }
 
 void Player::climbUp() {
 
-        _state = State::CLIMB;
-        _vy  = -1;
-        _dist = 0;    
+    _state = State::CLIMB;
+    _counter     = 0;
+    _start_frame = PLAYER_CLIMB_START_FRAME;
+    _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
+    _frame = PLAYER_CLIMB_START_FRAME;
+    _vy  = -_v_climb;
+    _dist = 0;    
 
 }
 
 void Player::climbDown() {
 
-        _state = State::CLIMB;
-         _vy =  1;
-        _dist = 0;   
+    _state = State::CLIMB;
+    _counter     = 0;
+    _start_frame = PLAYER_CLIMB_START_FRAME;
+    _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
+    _frame = PLAYER_CLIMB_START_FRAME;
+    _vy =  _v_climb;
+    _dist = 0;   
 
 }
 
 void Player::fall() {
 
-        _state = State::FALL;
-         _vy =  1;
-        _dist = 0;   
+    _state = State::FALL;
+    _counter     = 0;
+    _start_frame = PLAYER_CLIMB_START_FRAME;
+    _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
+    _frame = PLAYER_CLIMB_START_FRAME;
+    _vy  = _v_fall;
+    _dist = 0;   
 
 }
 
@@ -107,23 +149,47 @@ void Player::update() {
     switch (_state) {
 
         case State::RUN:
-        
-            static uint8_t       counter     = 0;
-            static uint8_t const start_frame = PLAYER_RUN_START_FRAME;
-            static uint8_t const end_frame   = PLAYER_RUN_START_FRAME + PLAYER_RUN_FRAMES;
-            
-            if (++counter > 5) {
-                counter = 0;
-                _frame++; if (_frame < end_frame) return;
-                _frame = start_frame;
+                    
+            if (++_counter > PLAYER_RUN_FRAMES) {
+                _counter = 0;
+                _frame++; if (_frame < _end_frame) return;
+                _frame = _start_frame;
             }
             
             break;
         
+
         case State::CLIMB:
+            
+            if (++_counter > PLAYER_CLIMB_FRAMES) {
+                _counter = 0;
+                _frame++; if (_frame < _end_frame) return;
+                _frame = _start_frame;
+            }
+
             break;
 
+
+        case State::ON_CABLE:
+            
+            if (++_counter > PLAYER_CABLE_FRAMES) {
+                _counter = 0;
+                _frame++; if (_frame < _end_frame) return;
+                _frame = _start_frame;
+            }
+
+
+            break;
+
+
         case State::FALL:
+            
+            if (++_counter > PLAYER_CLIMB_FRAMES) {
+                _counter = 0;
+                _frame++; if (_frame < _end_frame) return;
+                _frame = _start_frame;
+            }
+
             break;
 
 

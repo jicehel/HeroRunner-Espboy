@@ -35,13 +35,14 @@ void Game::_readButtons() {
     } else if (espboy.button.held(Button::LEFT)) {
 
         if (_player.x() >= TILE_LENGTH)
-            if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
+            if (_map.isCable(_player.x(), _player.y()) && !_map.isGround(_player.x() - TILE_LENGTH, _player.y()))
+                _player.cableToLeft(); 
+            else if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
                 _player.runToLeft();
+            else if (_player.x() > 0)
+                _player.runToLeft(); 
             else
-                if (_player.x() > 0)
-                    _player.runToLeft(); 
-                else
-                    _player.stop();    
+                _player.stop();    
         else 
             _player.stop();   
 
@@ -49,13 +50,14 @@ void Game::_readButtons() {
     } else if (espboy.button.held(Button::RIGHT)) {
 
         if ((_player.x()  + PLAYER_WIDTH + TILE_LENGTH) < LEVEL_WIDTH * TILE_LENGTH)
-            if(!_map.isGround(_player.x() + TILE_LENGTH, _player.y())) 
+            if (_map.isCable(_player.x(), _player.y()) && !_map.isGround(_player.x() + TILE_LENGTH, _player.y()))
+                _player.cableToRight(); 
+            else if(!_map.isGround(_player.x() + TILE_LENGTH, _player.y())) 
+                _player.runToRight();
+            else if (_player.x() + PLAYER_WIDTH + TILE_LENGTH < LEVEL_WIDTH * TILE_LENGTH)
                 _player.runToRight();
             else
-                if (_player.x() + PLAYER_WIDTH + TILE_LENGTH < LEVEL_WIDTH * TILE_LENGTH)
-                    _player.runToRight();
-                else
-                    _player.stop();    
+                _player.stop();    
         else 
             _player.stop();   
 
