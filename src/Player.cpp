@@ -19,8 +19,10 @@ void Player::begin(uint8_t const level) {
 
 float_t const Player::x()      const { return _x; }
 float_t const Player::y()      const { return _y; }
-float_t  const Player::dist()   const { return _dist; }
-boolean  const Player::isStop() const { return (_state == State::STAND_BY) ? (true) : (false); }
+float_t const Player::vx()     const { return _vx; }
+float_t const Player::vy()     const { return _vy; }
+float_t const Player::dist()   const { return _dist; }
+boolean const Player::isStop() const { return (_state == State::STAND_BY) ? (true) : (false); }
 
 void Player::stop() {
 
@@ -110,6 +112,7 @@ void Player::fall() {
 
     _state = State::FALL;
     _counter     = 0;
+    _x = (_x / TILE_LENGTH) * TILE_LENGTH;
     _start_frame = PLAYER_CLIMB_START_FRAME;
     _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
     _frame = PLAYER_CLIMB_START_FRAME;
@@ -120,27 +123,25 @@ void Player::fall() {
 
 void Player::update() {
 
-    if (
-        (_vx < 0 && _x + _vx >= 0) ||
-        (_vx > 0 && _x + PLAYER_WIDTH + _vx < LEVEL_WIDTH * TILE_LENGTH)
-    ) {
+    if ((_vx < 0 && _x + _vx >= 0) || (_vx > 0 && _x + PLAYER_WIDTH + _vx + 1 < LEVEL_WIDTH * TILE_LENGTH)) {
 
         _x += _vx;
         (_vx > 0) ? (_dist += _vx) : (_dist -= _vx);
 
-    }
+    } else if (_vx > 0 && _x + PLAYER_WIDTH + _vx + 1 >= LEVEL_WIDTH * TILE_LENGTH) {
+        Player::stop();
+    } else if (_vx < 0 && _x + _vx <= 0) {
+        Player::stop();
+    }    
 
-    if (
-        (_vy < 0 && _y + _vy >= 0) ||
-        (_vy > 0 && _y + PLAYER_HEIGHT + _vy < LEVEL_HEIGHT * TILE_LENGTH)
-    ) {
+    if ((_vy < 0 && _y + _vy >= 0) || (_vy > 0 && _y + PLAYER_HEIGHT + _vy < LEVEL_HEIGHT * TILE_LENGTH)) {
 
         _y += _vy;
         (_vy > 0) ? (_dist += _vy) : (_dist -= _vy);
 
     }
 
-    if (_dist >= TILE_LENGTH) {
+    if (_dist >= TILE_LENGTH || _y < 1 || (_y  + PLAYER_HEIGHT) > (LEVEL_HEIGHT * TILE_LENGTH)) {
 
         Player::stop();
 
@@ -154,8 +155,7 @@ void Player::update() {
                 _counter = 0;
                 _frame++; if (_frame < _end_frame) return;
                 _frame = _start_frame;
-            }
-            
+            }  
             break;
         
 
@@ -166,7 +166,6 @@ void Player::update() {
                 _frame++; if (_frame < _end_frame) return;
                 _frame = _start_frame;
             }
-
             break;
 
 
@@ -177,8 +176,6 @@ void Player::update() {
                 _frame++; if (_frame < _end_frame) return;
                 _frame = _start_frame;
             }
-
-
             break;
 
 
@@ -189,7 +186,6 @@ void Player::update() {
                 _frame++; if (_frame < _end_frame) return;
                 _frame = _start_frame;
             }
-
             break;
 
 

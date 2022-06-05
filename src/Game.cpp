@@ -34,32 +34,60 @@ void Game::_readButtons() {
 
     } else if (espboy.button.held(Button::LEFT)) {
 
-        if (_player.x() >= TILE_LENGTH)
-            if (_map.isCable(_player.x(), _player.y()) && !_map.isGround(_player.x() - TILE_LENGTH, _player.y()))
+        if (_player.x() >= TILE_LENGTH && _player.isStop()) {
+            
+            if (_map.isCable(_player.x(), _player.y()) && !_map.isGround(_player.x() - TILE_LENGTH, _player.y())) {
+                // _framebuffer->drawString("cas 1",1,1);
+                // _framebuffer->pushSprite(0, 0);
                 _player.cableToLeft(); 
-            else if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) 
+                // delay(500);
+            } else if(!_map.isGround(_player.x() - TILE_LENGTH, _player.y())) {
+                // _framebuffer->drawString("cas 2",1,1);
+                // _framebuffer->pushSprite(0, 0);
                 _player.runToLeft();
-            else if (_player.x() > 0)
+                // delay(500);
+            } else if (_player.x() > 0 && !_map.isGround(_player.x() - TILE_LENGTH, _player.y())) {
+                // _framebuffer->drawString("cas 3",1,1);
+                // _framebuffer->pushSprite(0, 0);
                 _player.runToLeft(); 
-            else
-                _player.stop();    
-        else 
-            _player.stop();   
+                // delay(500);
+            } else {
+                // _framebuffer->drawString("cas 4",1,1);
+                // _framebuffer->pushSprite(0, 0);
+                _player.stop();   
+                // delay(500); 
+            }    
+        } else {
+            if (_player.x() > 0 && _player.isStop()) {
+                // _framebuffer->drawString("cas 5",1,1);
+                // _framebuffer->pushSprite(0, 0);
+                _player.runToLeft(); 
+                // delay(500);
+            } else {    
+                // _framebuffer->drawString("cas 6",1,1);
+                // _framebuffer->pushSprite(0, 0);
+                _player.stop();   
+                // delay(500);
+            }
+        }     
 
 
     } else if (espboy.button.held(Button::RIGHT)) {
 
-        if ((_player.x()  + PLAYER_WIDTH + TILE_LENGTH) < LEVEL_WIDTH * TILE_LENGTH)
+        if ((_player.x()  + PLAYER_WIDTH + TILE_LENGTH) < LEVEL_WIDTH * TILE_LENGTH && _player.isStop())
             if (_map.isCable(_player.x(), _player.y()) && !_map.isGround(_player.x() + TILE_LENGTH, _player.y()))
                 _player.cableToRight(); 
             else if(!_map.isGround(_player.x() + TILE_LENGTH, _player.y())) 
                 _player.runToRight();
-            else if (_player.x() + PLAYER_WIDTH + TILE_LENGTH < LEVEL_WIDTH * TILE_LENGTH)
+            else if (_player.x() + PLAYER_WIDTH + TILE_LENGTH < LEVEL_WIDTH * TILE_LENGTH && !_map.isGround(_player.x() + TILE_LENGTH, _player.y()))
                 _player.runToRight();
             else
                 _player.stop();    
         else 
-            _player.stop();   
+            if (_player.x() + PLAYER_WIDTH < LEVEL_WIDTH && _player.isStop())
+                 _player.cableToRight(); 
+            else     
+                _player.stop();   
 
 
     } else if (
@@ -73,7 +101,7 @@ void Game::_readButtons() {
     
     if (espboy.button.held(Button::UP)) {
 
-        if (_player.y()  > 0)
+        if (_player.y()  > 0 && _player.isStop())
             if(_map.isLadder(_player.x(), _player.y()))
                 _player.climbUp();
             else
@@ -84,7 +112,7 @@ void Game::_readButtons() {
 
     } else if (espboy.button.held(Button::DOWN)) {
 
-        if (_player.y()  <= TFT_HEIGHT - TILE_LENGTH)
+        if (_player.y()  <= TFT_HEIGHT - TILE_LENGTH && _player.isStop())
             if(_map.isLadder(_player.x(), _player.y() + TILE_LENGTH))
                 _player.climbDown();
             else if (_player.isStop() && _map.isFall(_player.x(),_player.y() + TILE_LENGTH )) {
@@ -126,10 +154,17 @@ void Game::_draw() {
     _map.draw(_level, _camera, _framebuffer);
     _player.draw(_camera, _framebuffer);
 
-    // _framebuffer->setTextColor(0xffff);
-    // _framebuffer->drawNumber(_player.x()/ TILE_LENGTH,  1, 1);
-    // _framebuffer->drawNumber(_player.y()/ TILE_LENGTH, 21, 1);
+    /* Debug part
+    _framebuffer->setTextColor(0xffff);
+    _framebuffer->drawNumber(_player.x(),  0, 1);
+    _framebuffer->drawNumber(_player.y(), 25, 1);
+    _framebuffer->drawNumber(_player.vx(), 50, 1);
+    _framebuffer->drawNumber(_player.dist(), 75, 1);
+    _framebuffer->drawNumber((LEVEL_WIDTH * TILE_LENGTH - PLAYER_WIDTH), 100, 1);  
+
     // _framebuffer->drawNumber(!_map.isGround(_player.x() - TILE_LENGTH, _player.y()), 41, 1);
+     //_framebuffer->drawString(_player.message, 1, 1);
+                                                           */
 
     _framebuffer->pushSprite(0, 0);
 
