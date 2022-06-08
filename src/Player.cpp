@@ -7,13 +7,14 @@ void Player::begin(uint8_t const level) {
 
     uint16_t const offset = (level - 1) << 1;
 
-    _state = State::STAND_BY;
-    _x     = TILE_LENGTH * LEVEL_PLAYER_START[offset];
-    _y     = TILE_LENGTH * LEVEL_PLAYER_START[offset + 1];
-    _vx    = 0;
-    _vy    = 0;
-    _dist  = 0;
-    _frame = 0;
+    _state  = State::STAND_BY;
+    _column = LEVEL_PLAYER_START[offset];
+    _x      = TILE_LENGTH * _column;
+    _line   = LEVEL_PLAYER_START[offset + 1];
+    _y      = TILE_LENGTH * _line;
+    _vx     = 0;
+    _vy     = 0;
+    _frame  = 0;
 
 }
 
@@ -21,18 +22,15 @@ float_t const Player::x()      const { return _x; }
 float_t const Player::y()      const { return _y; }
 float_t const Player::vx()     const { return _vx; }
 float_t const Player::vy()     const { return _vy; }
-float_t const Player::dist()   const { return _dist; }
 boolean const Player::isStop() const { return (_state == State::STAND_BY) ? (true) : (false); }
 
 void Player::stop() {
 
     _state = State::STAND_BY;
-    _vx    = 0;
-    _vy    = 0;
-    _x = (_x / TILE_LENGTH) * TILE_LENGTH;
-    _y = (_y / TILE_LENGTH) * TILE_LENGTH;
+    _vx = 0;
+    _vy = 0;
     _frame = PLAYER_STAND_BY_FRAME;
-    _dist  = 0; 
+    //_dist  = 0; 
 
 }
 
@@ -44,7 +42,7 @@ void Player::runToLeft() {
     _start_frame = PLAYER_RUN_START_FRAME;
     _end_frame   = PLAYER_RUN_START_FRAME + PLAYER_RUN_FRAMES;
     _frame = PLAYER_RUN_START_FRAME;
-    _dist = 0;
+    _column -= 1;
     
 }
 
@@ -56,7 +54,7 @@ void Player::runToRight() {
     _start_frame = PLAYER_RUN_START_FRAME;
     _end_frame   = PLAYER_RUN_START_FRAME + PLAYER_RUN_FRAMES;
     _frame = PLAYER_RUN_START_FRAME;
-    _dist = 0;
+    _column += 1;
 
 
 }
@@ -68,7 +66,7 @@ void Player::cableToLeft() {
     _start_frame = PLAYER_CABLE_START_FRAME;
     _end_frame   = PLAYER_CABLE_START_FRAME + PLAYER_CABLE_FRAMES;
     _frame = PLAYER_CABLE_START_FRAME;
-    _dist = 0;
+    _column -= 1;
     
 }
 
@@ -80,7 +78,7 @@ void Player::cableToRight() {
     _start_frame = PLAYER_CABLE_START_FRAME;
     _end_frame   = PLAYER_CABLE_START_FRAME + PLAYER_CABLE_FRAMES;
     _frame = PLAYER_CABLE_START_FRAME;
-    _dist = 0;
+    _column += 1;
 
 }
 
@@ -92,7 +90,7 @@ void Player::climbUp() {
     _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
     _frame = PLAYER_CLIMB_START_FRAME;
     _vy  = -_v_climb;
-    _dist = 0;    
+    _line -= 1;    
 
 }
 
@@ -104,7 +102,7 @@ void Player::climbDown() {
     _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
     _frame = PLAYER_CLIMB_START_FRAME;
     _vy =  _v_climb;
-    _dist = 0;   
+    _line += 1;   
 
 }
 
@@ -112,40 +110,34 @@ void Player::fall() {
 
     _state = State::FALL;
     _counter     = 0;
-    _x = (_x / TILE_LENGTH) * TILE_LENGTH;
     _start_frame = PLAYER_CLIMB_START_FRAME;
     _end_frame   = PLAYER_CLIMB_START_FRAME + PLAYER_CLIMB_FRAMES;
     _frame = PLAYER_CLIMB_START_FRAME;
     _vy  = _v_fall;
-    _dist = 0;   
+    _line += 1;   
 
 }
 
 void Player::update() {
 
-    if ((_vx < 0 && _x + _vx >= 0) || (_vx > 0 && _x + PLAYER_WIDTH + _vx + 1 < LEVEL_WIDTH * TILE_LENGTH)) {
+    if (!(_state == State::STAND_BY)) {
+        if ((_vx < 0 && _x + _vx >= 0) || (_vx > 0 && _x + PLAYER_WIDTH + _vx + 1 < LEVEL_WIDTH * TILE_LENGTH)) {
+            _x += _vx;
+        }    
 
-        _x += _vx;
-        (_vx > 0) ? (_dist += _vx) : (_dist -= _vx);
+        if ((_vy < 0 && _y + _vy >= 0) || (_vy > 0 && _y + PLAYER_HEIGHT + _vy < LEVEL_HEIGHT * TILE_LENGTH)) {
+            _y += _vy;
+        }
 
-    } else if (_vx > 0 && _x + PLAYER_WIDTH + _vx + 1 >= LEVEL_WIDTH * TILE_LENGTH) {
-        Player::stop();
-    } else if (_vx < 0 && _x + _vx <= 0) {
-        Player::stop();
+        if ((_vx < 0 && _x <= _column * TILE_LENGTH -1 ) || (_vx < 0 && _x <= 1) ||
+            (_vx > 0 && _x >  _column * TILE_LENGTH +1 ) || (_vx > 0 && _x >= (LEVEL_WIDTH - 1) * TILE_LENGTH) ||
+            (_vy < 0 && _y <= _line   * TILE_LENGTH +1 ) || (_vy < 0 && _y <= 1 )||
+            (_vy > 0 && _y >  _line   * TILE_LENGTH -1 ) || (_vy > 0 && _y >= (LEVEL_HEIGHT - 1) * TILE_LENGTH)) {
+
+            Player::stop();
+
+        } 
     }    
-
-    if ((_vy < 0 && _y + _vy >= 0) || (_vy > 0 && _y + PLAYER_HEIGHT + _vy < LEVEL_HEIGHT * TILE_LENGTH)) {
-
-        _y += _vy;
-        (_vy > 0) ? (_dist += _vy) : (_dist -= _vy);
-
-    }
-
-    if (_dist >= TILE_LENGTH || _y < 1 || (_y  + PLAYER_HEIGHT) > (LEVEL_HEIGHT * TILE_LENGTH)) {
-
-        Player::stop();
-
-    }
 
     switch (_state) {
 
@@ -156,7 +148,7 @@ void Player::update() {
                 _frame++; if (_frame < _end_frame) return;
                 _frame = _start_frame;
             }  
-            break;
+            break;  
         
 
         case State::CLIMB:

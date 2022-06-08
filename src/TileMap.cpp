@@ -12,8 +12,6 @@ bool TileMap::isShown(const uint8_t tile) const {
 }
 
 bool TileMap::isFall(uint8_t pox, uint8_t poy) {
-    pox = pox / TILE_LENGTH;
-    poy = poy / TILE_LENGTH;
 	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
 	if (tile == EMPTY || tile == CABLE || tile == TREASURE || tile == ENNEMY || tile == HERO) 
 		return true;
@@ -22,8 +20,6 @@ bool TileMap::isFall(uint8_t pox, uint8_t poy) {
 }
 
 bool TileMap::isGround(uint8_t pox, uint8_t poy) {
-    pox = pox / TILE_LENGTH;
-    poy = poy / TILE_LENGTH;
 	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
 	if (tile == GROUND) 
 		return true;
@@ -32,8 +28,6 @@ bool TileMap::isGround(uint8_t pox, uint8_t poy) {
 }
 
 bool TileMap::isTreasure(uint8_t pox, uint8_t poy) {
-    pox = pox / TILE_LENGTH;
-    poy = poy / TILE_LENGTH;
 	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
 	if (tile == TREASURE) 
 		return true;
@@ -43,8 +37,6 @@ bool TileMap::isTreasure(uint8_t pox, uint8_t poy) {
 
 
 bool TileMap::isCable(uint8_t pox, uint8_t poy) {
-    pox = pox / TILE_LENGTH;
-    poy = poy / TILE_LENGTH;
 	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
 	if (tile == CABLE) 
 		return true;
@@ -53,8 +45,6 @@ bool TileMap::isCable(uint8_t pox, uint8_t poy) {
 }
 
 bool TileMap::isLadder(uint8_t pox, uint8_t poy) {
-    pox = pox / TILE_LENGTH;
-    poy = poy / TILE_LENGTH;
 	uint8_t tile = pgm_read_byte(LEVEL_MAP + poy * LEVEL_WIDTH + pox);
 	if (tile == SCALE || (tile == ENDSCALE && true))
 		return true;
