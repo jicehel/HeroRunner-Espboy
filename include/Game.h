@@ -34,6 +34,11 @@ class Game {
 
         uint8_t _level;
 
+        struct treasure {
+            uint8_t x, y;
+            boolean open;
+        };
+
         void _readButtons();
         void _update();
         void _draw();

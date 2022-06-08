@@ -9,10 +9,11 @@ class Player {
 
         void begin(uint8_t const level);
 
-        float_t const x()    const;
-        float_t const y()    const;
-        float_t  const dist() const;
-        boolean  const isStop() const;
+        float_t const x()      const;
+        float_t const y()      const;
+        float_t const vx()     const; 
+        float_t const vy()     const; 
+        boolean const isStop() const;
 
         void stop();
         void runToLeft();
@@ -48,11 +49,13 @@ class Player {
 
 
   
-        float_t _x;
-        float_t _y;
+        float_t  _x;
+        float_t  _y;
         float_t  _vx;
         float_t  _vy;
-        float_t  _dist;
+        int16_t  _column;
+        int16_t  _line;
+
         uint8_t  _frame;
         uint8_t  _start_frame;
         uint8_t  _end_frame;
