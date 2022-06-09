@@ -98,9 +98,9 @@ void Game::_readButtons() {
         } else if (espboy.button.held(Button::DOWN)) {
 
             if (line < LEVEL_HEIGHT)
-                if(_map.isLadder(column, line + 1))
+                if(_map.isLadder(column, line + 1)  && line < LEVEL_HEIGHT -1)
                 _player.climbDown();
-                else if (_map.isFall(column, line + 1)) {
+                else if (_map.isFall(column, line + 1) && line < LEVEL_HEIGHT -1) {
          		    _player.fall();
                 } else
                     _player.stop();    

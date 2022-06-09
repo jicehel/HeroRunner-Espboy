@@ -129,10 +129,10 @@ void Player::update() {
             _y += _vy;
         }
 
-        if ((_vx < 0 && _x <= _column * TILE_LENGTH -1 ) || (_vx < 0 && _x <= 1) ||
+        if ((_vx < 0 && _x <= _column * TILE_LENGTH +2 ) || (_vx < 0 && _x <= 1) ||
             (_vx > 0 && _x >  _column * TILE_LENGTH +1 ) || (_vx > 0 && _x >= (LEVEL_WIDTH - 1) * TILE_LENGTH) ||
-            (_vy < 0 && _y <= _line   * TILE_LENGTH +1 ) || (_vy < 0 && _y <= 1 )||
-            (_vy > 0 && _y >  _line   * TILE_LENGTH -1 ) || (_vy > 0 && _y >= (LEVEL_HEIGHT - 1) * TILE_LENGTH)) {
+            (_vy < 0 && _y <= _line   * TILE_LENGTH  ) || (_vy < 0 && _y <= 1 )||
+            (_vy > 0 && _y >  _line   * TILE_LENGTH  ) || (_vy > 0 && _y > (LEVEL_HEIGHT - 1) * TILE_LENGTH)) {
 
             Player::stop();
 
